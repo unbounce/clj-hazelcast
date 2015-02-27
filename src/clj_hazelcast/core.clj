@@ -66,6 +66,8 @@
 (defn put-all! [^IMap dest ^Map src]
   (.putAll dest src))
 
+(defn remove! [m key] (.remove ^IMap m key))
+
 (defn clear! [m] (.clear ^IMap m))
 
 (defn add-entry-listener! [^IMap m listener-fn]

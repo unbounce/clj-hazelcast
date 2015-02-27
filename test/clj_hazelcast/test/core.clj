@@ -59,3 +59,11 @@
            (:key-ttl @test-map))))
   (Thread/sleep 2000)
   (is (nil? (:key-ttl @test-map))))
+
+(deftest remove!-test
+  (is (= "to be removed"
+        (do
+          (hazelcast/put! @test-map :key-remove "to be removed")
+          (:key-remove @test-map))))
+  (hazelcast/remove! @test-map :key-remove)
+  (is (nil? (:key-remove @test-map))))
