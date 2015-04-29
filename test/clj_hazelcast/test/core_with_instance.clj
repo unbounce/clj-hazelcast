@@ -6,8 +6,6 @@
    com.hazelcast.core.Hazelcast
    com.hazelcast.core.HazelcastInstance))
 
-(defonce ^:const map-name "clj-hazelcast.cluster-tests-with-instance.test-map")
-
 (def hazelcast-instance (atom nil))
 
 (defn fixture [f]
@@ -20,9 +18,32 @@
 
 (deftest ensure-provided-instance-used
   "Putting via clj-hazelcast should put in the provided Hazelcast instance"
-  (let [instance-map (.getMap ^HazelcastInstance @hazelcast-instance map-name)
+  (let [map-name "clj-hazelcast.cluster-tests-with-instance.test-map"
+        instance-map (.getMap @hazelcast-instance map-name)
         clj-hazelcast-map (hazelcast/get-map map-name)]
     (is (= 456
            (do
              (hazelcast/put! clj-hazelcast-map :bar 456)
              (get instance-map :bar))))))
+
+(deftest get-primitives-with-instance
+  (let [map-name "clj-hazelcast.get-primitives-with-instance.test-map"
+        list-name "clj-hazelcast.get-primitives-with-instance.test-list"
+        set-name "clj-hazelcast.get-primitives-with-instance.test-set"
+        queue-name "clj-hazelcast.get-primitives-with-instance.test-queue"]
+    (is
+      (identical?
+        (hazelcast/get-map @hazelcast-instance map-name)
+        (.getMap @hazelcast-instance map-name)))
+    (is
+      (identical?
+        (hazelcast/get-list @hazelcast-instance list-name)
+        (.getList @hazelcast-instance list-name)))
+    (is
+      (identical?
+        (hazelcast/get-set @hazelcast-instance set-name)
+        (.getSet @hazelcast-instance set-name)))
+    (is
+      (identical?
+        (hazelcast/get-queue @hazelcast-instance queue-name)
+        (.getQueue @hazelcast-instance queue-name)))))
