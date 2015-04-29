@@ -54,8 +54,11 @@
 (defmacro with-lock [lockable & body]
   `(do-with-lock ~lockable (fn [] ~@body)))
 
-(defn ^Map get-map [name]
-  (.getMap ^HazelcastInstance @hazelcast name))
+(defn ^Map get-map
+  ([name]
+    (get-map @hazelcast name))
+  ([^HazelcastInstance hz-instance ^String name]
+    (.getMap hz-instance name)))
 
 (defn put! [^IMap m key value]
   (.put m key (kryo/wrap-kryo-serializable value)))
@@ -85,11 +88,17 @@
 (defn remove-entry-listener! [^Map m ^String id]
   (.removeEntryListener ^IMap m id))
 
-(defn ^List get-list [name]
-  (.getList ^HazelcastInstance @hazelcast name))
+(defn ^List get-list
+  ([name]
+    (get-list @hazelcast name))
+  ([^HazelcastInstance hz-instance ^String name]
+    (.getList hz-instance name)))
 
-(defn ^Set get-set [name]
-  (.getSet ^HazelcastInstance @hazelcast name))
+(defn ^Set get-set
+  ([name]
+    (get-set @hazelcast name))
+  ([^HazelcastInstance hz-instance ^String name]
+    (.getSet hz-instance name)))
 
 (defn add! [^Collection list-or-set-or-queue item]
   (.add list-or-set-or-queue (kryo/wrap-kryo-serializable item)))
@@ -108,9 +117,12 @@
 
 
 ;queue related
-(defn ^BlockingQueue get-queue [name]
+(defn ^BlockingQueue get-queue
   "returns a distributed blocking queue instance based on Hazelcast"
-  (.getQueue ^HazelcastInstance @hazelcast name))
+  ([name]
+    (get-queue @hazelcast name))
+  ([^HazelcastInstance hz-instance ^String name]
+    (.getQueue hz-instance name)))
 
 (defn take! [^BlockingQueue queue]
   (.take queue))
